@@ -397,20 +397,11 @@ Status: `Proposed`
 - **Defining dcom in core.** Core owns the `dimension` type and the dimensions column; the dcom vocabulary
   is this plugin's from the first commit.
 
-## Model catalog
-
-None. This plugin declares no `[models]`; the four nodes it seeds are instances of core's `dimension` type.
-
-## Edge types
-
-None. This plugin declares no `[edges]` (`req-dcom-pack-2`).
-
 ## Reference data
 
 | Document | Contents | Seeded by |
 | --- | --- | --- |
 | `grift/dimensions.grift.json` | The four dimension nodes with their descriptions (`req-dcom-pack`) | Every record |
 
-## Icons
-
-None of this plugin's own. The `dimension` type's icon is core's.
+This plugin declares no `[models]` and no `[edges]`; the manifest is the source for that, and the four nodes
+it seeds are instances of core's `dimension` type (`req-dcom-pack-2`).
