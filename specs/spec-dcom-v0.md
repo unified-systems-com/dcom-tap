@@ -9,16 +9,7 @@
 | Slug | `dcom` |
 | Display name | TAP dcom |
 | Description | The design / configuration / operation model as a dimension pack. |
-| Kind | Vocabulary substrate: dimension nodes only. No models, no edges, no collector, no pages, no credential. |
-| Dist | `dcom-tap` |
-| Import namespace | `tap_plugin.dcom` |
-| Entry point | `dcom = "tap_plugin.dcom.apps:DcomConfig"` under `[project.entry-points."tap.plugins"]` |
-| AppConfig | `tap_plugin.dcom.apps.DcomConfig` |
-| Repo | `unified-systems-com/dcom-tap`, standalone from the first commit |
-| Dev workspace | `spawn-session.sh <label> --from <record> --dev-plugins dcom` |
-| Depends on | Nothing |
-| GRIFT | `grift/dimensions.grift.json` (`req-dcom-pack`) |
-| Boot records | `ci` (in-package, `req-boot-bootstrap-ci-record`) |
+| Kind | Vocabulary substrate: dimension nodes only. No models, no edges, no collector, no pages, no credential, no dependencies. |
 
 **Default dimensions** (on every node this plugin ships)
 
