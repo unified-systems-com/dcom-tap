@@ -1,0 +1,80 @@
+{
+  "metadata": {
+    "grift_version": "0"
+  },
+  "_reserved": {},
+  "batches": [
+    {
+      "batch_entity": {
+        "entity_id": "01a0c057-8f3d-70cd-b07c-c751a5b44363",
+        "entity_type": "batch",
+        "name": "dcom Dimension Pack v0.1.0",
+        "dimensions": {}
+      },
+      "batch_node": {
+        "source": "tap_plugin.dcom.grift.dimensions",
+        "name": "dcom Dimension Pack v0.1.0",
+        "description": "The design / configuration / operation axis as four dimension nodes (req-dcom-pack): the axis node `dcom` and its three value nodes `dcom.design`, `dcom.configuration`, `dcom.operation`. No edges — the hierarchy is derived from the dotted name (req-dcom-naming), so parent/child edges would be a second copy of a fact the name already carries. Each node carries `tap.meta: dimension` (core's default for the type) and NO `dcom` value: the pack is the dictionary, and dictionary entries are not entries in themselves (req-dcom-pack-4). Node entity ids are minted once and never change; revising the descriptions means a new batch id and a bumped batch name, with the node ids stable."
+      },
+      "nodes": [
+        {
+          "entity": {
+            "entity_id": "01a0c057-8f3d-70cd-b07c-c7523153be64",
+            "entity_type": "dimension",
+            "name": "dcom",
+            "dimensions": {
+              "tap.meta": "dimension"
+            }
+          },
+          "node": {
+            "name": "dcom",
+            "description": "The design / configuration / operation axis. Every node or edge that describes a designed system may carry one `dcom` label saying which kind of fact it is: `design` (intent, edited), `configuration` (declared to the system, versioned, changes under you), or `operation` (happened, immutable). An entity carries one value or none, never two. The value describes the observation, not the thing: a pipeline's definition is configuration; each run of it is an operation. Only facts derived from configuration can go stale, because only configuration changes. The three values are the nodes named `dcom.design`, `dcom.configuration` and `dcom.operation`."
+          }
+        },
+        {
+          "entity": {
+            "entity_id": "01a0c057-8f3d-70cd-b07c-c753d9f21c5e",
+            "entity_type": "dimension",
+            "name": "dcom.design",
+            "dimensions": {
+              "tap.meta": "dimension"
+            }
+          },
+          "node": {
+            "name": "dcom.design",
+            "description": "The `design` position on the dcom axis: intent that precedes any concrete instance — what a system is meant to do, as authored by people. A design is edited, not versioned by the system it describes; a rewrite supersedes it. Nothing the system reads at run time is a design; the moment a design is encoded where the system reads it, that encoding is `configuration`."
+          }
+        },
+        {
+          "entity": {
+            "entity_id": "01a0c057-8f3d-70cd-b07c-c754274d6cff",
+            "entity_type": "dimension",
+            "name": "dcom.configuration",
+            "dimensions": {
+              "tap.meta": "dimension"
+            }
+          },
+          "node": {
+            "name": "dcom.configuration",
+            "description": "The `configuration` position on the dcom axis: a declared instance that a system reads to decide what may happen — a definition file, a job as declared, a protection rule, a selector for where work may run. Configuration has history: it changes under you, each change is a new version of the same node, and any fact derived from the content of an older version (a reference it contained, a line it flagged, a permission it granted) may no longer hold. When you ask \"is this still true?\", ask it of configuration."
+          }
+        },
+        {
+          "entity": {
+            "entity_id": "01a0c057-8f3d-70cd-b07c-c75516436dd3",
+            "entity_type": "dimension",
+            "name": "dcom.operation",
+            "dimensions": {
+              "tap.meta": "dimension"
+            }
+          },
+          "node": {
+            "name": "dcom.operation",
+            "description": "The `operation` position on the dcom axis: something that happened — a run, an execution, a scan, a finding emitted at a moment in time. An operation is immutable once recorded; it can be observed again but never changed, and a later occurrence is a later operation. Its status or conclusion are fields on it, not a change to it. Facts derived from an operation never go stale. When you ask \"did this happen, and how did it end?\", ask it of an operation."
+          }
+        }
+      ],
+      "edges": []
+    }
+  ]
+}
