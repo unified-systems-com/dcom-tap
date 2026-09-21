@@ -1,0 +1,29 @@
+# Thin caller of core's reusable per-repo CI (req-tap-plugin-extdev-repo-ci). Two pins,
+# independent (req-tap-plugin-extdev-repo-ci-9): the `uses:` SHA pins WHICH validation
+# logic runs; the plugin's manifest `requires_tap` pins WHICH core it runs against — the
+# harness is core at the tag v<floor>, resolved by the workflow (req-tap-plugin-extdev-repo-ci-7).
+# No `harness_ref` (that is an override for the nightly and debugging, never a PR default)
+# and no `boot_profile` (retired form): the in-package tap_plugin/dcom/boot/ci.boot.json
+# IS the opt-in, and conformance fails closed without it (req-boot-bootstrap-ci-record-6).
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  tap:
+    # Pinned to tap main after v0.2.0 (Renovate does not track it): the validation logic
+    # must survive the conformance lane's venv, which holds no plugin at all (tap#666,
+    # fixed after v0.2.0), and carries the dependency find-spec fix (tap PR# 667). The
+    # harness itself is still core at the tag the manifest floor names.
+    uses: unified-systems-com/tap/.github/workflows/plugin-ci.yml@3fb54a7f3eab04bc31ee7139ef0d5cc2b1699567
+    with:
+      plugin_slug: dcom
+    secrets:
+      harness_pat: ${{ secrets.TAP_CORE_RO_PAT }}

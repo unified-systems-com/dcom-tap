@@ -11,11 +11,11 @@ produces. This plugin puts that axis on the grid as a vocabulary other plugins i
 | Display name | TAP dcom |
 | Description | The design / configuration / operation axis as a dimension pack: four dimension nodes and the rules for stamping the `dcom` label on nodes and edges. |
 | Kind | Vocabulary plugin (a substrate, like a `*_core`): ships dimension nodes and rules, no models of its own, no collector, no pages, no credential, no network. |
-| Dist | `tap-plugin-dcom` |
+| Dist | `dcom-tap` (`tap/plugin_identity.py:dist_name_for_slug` derives it from the slug; the `tap-plugin-<slug>` prefix this spec was written against is legacy) |
 | Import namespace | `tap_plugin.dcom` |
 | Entry point | `dcom = "tap_plugin.dcom.apps:DcomConfig"` under `[project.entry-points."tap.plugins"]` |
 | AppConfig | `tap_plugin.dcom.apps.DcomConfig` (`name` derived from the module path, `label` / `verbose_name` from the manifest) |
-| Repo | `unified-systems-com/tap-plugin-dcom`, standalone from the first commit |
+| Repo | `unified-systems-com/dcom-tap`, standalone from the first commit |
 | Depends on | Nothing. Core's `Dimension` model is the only type this plugin writes. |
 | Inherited by | Any plugin that declares `dcom` in `depends_on` and stamps the label on the types it owns (`req-dcom-inheritance`). |
 | GRIFT | `grift/dimensions.grift.json` — the dimension pack (`req-dcom-pack`) |
@@ -78,14 +78,14 @@ type. dcom says which kind of fact it is, and stops.
 
 | RID | Name | Status | Notes |
 | --- | --- | :---: | --- |
-| req-dcom-axis | [The Axis](#the-axis) | Proposed | Key `dcom`; values `design`, `configuration`, `operation`; the meaning and mutability of each |
-| req-dcom-pack | [The Dimension Pack](#the-dimension-pack) | Proposed | Four `Dimension` nodes, dotted names, descriptions for Player 3, no edges |
-| req-dcom-naming | [Dotted Names Carry the Hierarchy](#dotted-names-carry-the-hierarchy) | Proposed | Parent, children and label are derived from the name |
-| req-dcom-inheritance | [Inheriting the Axis](#inheriting-the-axis) | Proposed | `depends_on = dcom` is the opt-in; stamping via default dimensions on the plugin's own types |
-| req-dcom-stamping | [Stamping Rules](#stamping-rules) | Proposed | One value or none; property of the observation; edges stamp from their type or their source |
-| req-dcom-promises | [What a Value Promises](#what-a-value-promises) | Proposed | Configuration is versioned and can go stale; operation is immutable; design is edited |
-| req-dcom-queries | [Canonical Queries](#canonical-queries) | Proposed | The Gryphon a reader uses to read a side of the grid or enumerate the axis |
-| req-dcom-record | [CI Record and Tests](#ci-record-and-tests) | Proposed | The `ci` boot record seeds the pack; tests prove the four nodes and the naming rules |
+| req-dcom-axis | [The Axis](#the-axis) | Implemented | Key `dcom`; values `design`, `configuration`, `operation`; the meaning and mutability of each |
+| req-dcom-pack | [The Dimension Pack](#the-dimension-pack) | Implemented | Four `Dimension` nodes, dotted names, descriptions for Player 3, no edges |
+| req-dcom-naming | [Dotted Names Carry the Hierarchy](#dotted-names-carry-the-hierarchy) | Implemented | Parent, children and label are derived from the name |
+| req-dcom-inheritance | [Inheriting the Axis](#inheriting-the-axis) | Implemented | `depends_on = dcom` is the opt-in; stamping via default dimensions on the plugin's own types |
+| req-dcom-stamping | [Stamping Rules](#stamping-rules) | Implemented | One value or none; property of the observation; edges stamp from their type or their source |
+| req-dcom-promises | [What a Value Promises](#what-a-value-promises) | Implemented | Configuration is versioned and can go stale; operation is immutable; design is edited |
+| req-dcom-queries | [Canonical Queries](#canonical-queries) | Implemented | The Gryphon a reader uses to read a side of the grid or enumerate the axis |
+| req-dcom-record | [CI Record and Tests](#ci-record-and-tests) | Implemented | The `ci` boot record seeds the pack; tests prove the four nodes and the naming rules |
 
 ---
 
@@ -93,7 +93,7 @@ type. dcom says which kind of fact it is, and stops.
 ----
 RID: `req-dcom-axis`
 
-Status: `Proposed`
+Status: `Implemented`
 
 #### Implementation
 
@@ -112,9 +112,9 @@ The value is a property of the **observation**, not of the thing observed. The s
 
 | ACID | Title | Status | Description | Notes |
 | --- | --- | :---: | --- | --- |
-| req-dcom-axis-1 | Key and Values Fixed | Proposed | The key is `dcom`; the value set is exactly `design`, `configuration`, `operation`, lower case. | |
-| req-dcom-axis-2 | Meaning Stated per Value | Proposed | Each value's meaning and mutability rule is stated in this spec and in the corresponding node's description (`req-dcom-pack-3`). | |
-| req-dcom-axis-3 | Observation, Not Thing | Proposed | The spec states that the value describes the observation and that no entity carries two values. | |
+| req-dcom-axis-1 | Key and Values Fixed | Implemented | The key is `dcom`; the value set is exactly `design`, `configuration`, `operation`, lower case. | |
+| req-dcom-axis-2 | Meaning Stated per Value | Implemented | Each value's meaning and mutability rule is stated in this spec and in the corresponding node's description (`req-dcom-pack-3`). | |
+| req-dcom-axis-3 | Observation, Not Thing | Implemented | The spec states that the value describes the observation and that no entity carries two values. | |
 
 ---
 
@@ -122,7 +122,7 @@ The value is a property of the **observation**, not of the thing observed. The s
 ----
 RID: `req-dcom-pack`
 
-Status: `Proposed`
+Status: `Implemented`
 
 #### Implementation
 
@@ -146,10 +146,10 @@ of the bundle, and the description text is edited in place under a new batch so 
 
 | ACID | Title | Status | Description | Notes |
 | --- | --- | :---: | --- | --- |
-| req-dcom-pack-1 | Four Nodes | Proposed | Importing the pack yields exactly four `dimension` nodes named `dcom`, `dcom.design`, `dcom.configuration`, `dcom.operation`. | |
-| req-dcom-pack-2 | No Edges | Proposed | The bundle declares no edges. | `req-dcom-naming` makes them redundant. |
-| req-dcom-pack-3 | Descriptions Present and Specific | Proposed | Each node's description is non-empty, names its own value, and for the three value nodes states the mutability rule. | The text in the table above is the source; the test checks the properties, not a byte-match, so the prose can be improved without a spec edit. |
-| req-dcom-pack-4 | Dictionary Carries No Value | Proposed | None of the four nodes has a `dcom` key in its dimensions. | |
+| req-dcom-pack-1 | Four Nodes | Implemented | Importing the pack yields exactly four `dimension` nodes named `dcom`, `dcom.design`, `dcom.configuration`, `dcom.operation`. | |
+| req-dcom-pack-2 | No Edges | Implemented | The bundle declares no edges. | `req-dcom-naming` makes them redundant. |
+| req-dcom-pack-3 | Descriptions Present and Specific | Implemented | Each node's description is non-empty, names its own value, and for the three value nodes states the mutability rule. | The text in the table above is the source; the test checks the properties, not a byte-match, so the prose can be improved without a spec edit. |
+| req-dcom-pack-4 | Dictionary Carries No Value | Implemented | None of the four nodes has a `dcom` key in its dimensions. | |
 
 ---
 
@@ -157,7 +157,7 @@ of the bundle, and the description text is edited in place under a new batch so 
 ----
 RID: `req-dcom-naming`
 
-Status: `Proposed`
+Status: `Implemented`
 
 #### Implementation
 
@@ -181,9 +181,9 @@ label key may contain in an entity's `dimensions` column.
 
 | ACID | Title | Status | Description | Notes |
 | --- | --- | :---: | --- | --- |
-| req-dcom-naming-1 | Prefix Enumerates Values | Proposed | `MATCH (d:dimension) WHERE d.name STARTS_WITH "dcom." RETURN d` returns exactly the three value nodes. | |
-| req-dcom-naming-2 | Last Segment Is the Value | Proposed | For each value node, the last segment of its name equals a value in `req-dcom-axis-1`, and the prefix equals `dcom`. | |
-| req-dcom-naming-3 | No Dot in a Value | Proposed | No value node's last segment contains a dot. | |
+| req-dcom-naming-1 | Prefix Enumerates Values | Implemented | `MATCH (d:dimension) WHERE d.name STARTS_WITH "dcom." RETURN d` returns exactly the three value nodes. | |
+| req-dcom-naming-2 | Last Segment Is the Value | Implemented | For each value node, the last segment of its name equals a value in `req-dcom-axis-1`, and the prefix equals `dcom`. | |
+| req-dcom-naming-3 | No Dot in a Value | Implemented | No value node's last segment contains a dot. | |
 
 ---
 
@@ -191,7 +191,7 @@ label key may contain in an entity's `dimensions` column.
 ----
 RID: `req-dcom-inheritance`
 
-Status: `Proposed`
+Status: `Implemented`
 
 #### Implementation
 
@@ -217,9 +217,9 @@ exemption. That table is the plugin's statement of conformance until a check exi
 
 | ACID | Title | Status | Description | Notes |
 | --- | --- | :---: | --- | --- |
-| req-dcom-inheritance-1 | Dependency Is the Opt-In | Proposed | The spec states that declaring `dcom` in `depends_on` is how a plugin inherits the axis, and that no other manifest surface is required in v0. | |
-| req-dcom-inheritance-2 | Stamp via Defaults | Proposed | The spec states that the value is authored on the type's default dimensions and applied by core's merge, never written per-entity by collector code except under `req-dcom-stamping-4`. | |
-| req-dcom-inheritance-3 | Exemption Is Stated | Proposed | The spec requires an inheriting plugin to list each unstamped type with a reason in its own spec. | |
+| req-dcom-inheritance-1 | Dependency Is the Opt-In | Implemented | The spec states that declaring `dcom` in `depends_on` is how a plugin inherits the axis, and that no other manifest surface is required in v0. | |
+| req-dcom-inheritance-2 | Stamp via Defaults | Implemented | The spec states that the value is authored on the type's default dimensions and applied by core's merge, never written per-entity by collector code except under `req-dcom-stamping-4`. | |
+| req-dcom-inheritance-3 | Exemption Is Stated | Implemented | The spec requires an inheriting plugin to list each unstamped type with a reason in its own spec. | |
 
 ---
 
@@ -227,7 +227,7 @@ exemption. That table is the plugin's statement of conformance until a check exi
 ----
 RID: `req-dcom-stamping`
 
-Status: `Proposed`
+Status: `Implemented`
 
 #### Implementation
 
@@ -244,8 +244,8 @@ Status: `Proposed`
 
 | ACID | Title | Status | Description | Notes |
 | --- | --- | :---: | --- | --- |
-| req-dcom-stamping-1 | Rules Stated | Proposed | The six rules above appear in the spec and are cited by the inheriting plugins' dcom sections. | |
-| req-dcom-stamping-2 | No Unknown Value | Proposed | The value set contains no sentinel for "unknown"; absence of the key is the third state. | Three states, never two: `configuration` / `operation` / not stamped. |
+| req-dcom-stamping-1 | Rules Stated | Implemented | The six rules above appear in the spec and are cited by the inheriting plugins' dcom sections. | |
+| req-dcom-stamping-2 | No Unknown Value | Implemented | The value set contains no sentinel for "unknown"; absence of the key is the third state. | Three states, never two: `configuration` / `operation` / not stamped. |
 
 ---
 
@@ -253,7 +253,7 @@ Status: `Proposed`
 ----
 RID: `req-dcom-promises`
 
-Status: `Proposed`
+Status: `Implemented`
 
 #### Implementation
 
@@ -274,8 +274,8 @@ names enforcement as the next thing to build.
 
 | ACID | Title | Status | Description | Notes |
 | --- | --- | :---: | --- | --- |
-| req-dcom-promises-1 | Promises Stated | Proposed | The spec states the mutability promise of each value and names what may rely on it. | |
-| req-dcom-promises-2 | Stale Check Scoped to Configuration | Proposed | The spec states that only derivations from `configuration` nodes are subject to the grid's stale-derivation check. | Mechanism itself is core's (tap#447), not this plugin's. |
+| req-dcom-promises-1 | Promises Stated | Implemented | The spec states the mutability promise of each value and names what may rely on it. | |
+| req-dcom-promises-2 | Stale Check Scoped to Configuration | Implemented | The spec states that only derivations from `configuration` nodes are subject to the grid's stale-derivation check. | Mechanism itself is core's (tap#447), not this plugin's. |
 
 ---
 
@@ -283,7 +283,7 @@ names enforcement as the next thing to build.
 ----
 RID: `req-dcom-queries`
 
-Status: `Proposed`
+Status: `Implemented`
 
 #### Implementation
 
@@ -305,7 +305,7 @@ assert it returns nothing for each type its dcom section stamps.
 
 | ACID | Title | Status | Description | Notes |
 | --- | --- | :---: | --- | --- |
-| req-dcom-queries-1 | Queries Execute | Proposed | Each query above parses and executes against a grid with the pack seeded. | Proven in this plugin's tests for the two dictionary queries; the containment queries are proven by the first inheriting plugin. |
+| req-dcom-queries-1 | Queries Execute | Implemented | Each query above parses and executes against a grid with the pack seeded. | Proven in this plugin's tests: the two dictionary queries return the pack; the three containment queries parse and execute and return nothing, because nothing on a dcom-only grid carries a value. What they return once a value IS on the grid is proven by the first inheriting plugin. |
 
 ---
 
@@ -313,7 +313,7 @@ assert it returns nothing for each type its dcom section stamps.
 ----
 RID: `req-dcom-record`
 
-Status: `Proposed`
+Status: `Implemented`
 
 #### Implementation
 
@@ -331,8 +331,8 @@ Tests (`tap_plugin/dcom/tests/`):
 
 | ACID | Title | Status | Description | Notes |
 | --- | --- | :---: | --- | --- |
-| req-dcom-record-1 | CI Record Present | Proposed | `boot/ci.boot.json` exists, is named `ci`, installs only this plugin, and seeds the pack. | |
-| req-dcom-record-2 | Tests Ship in the Wheel | Proposed | The tests above are inside `tap_plugin/dcom/tests/` and pass against the `ci` record. | |
+| req-dcom-record-1 | CI Record Present | Implemented | `boot/ci.boot.json` exists, is named `ci`, installs only this plugin, and seeds the pack. | |
+| req-dcom-record-2 | Tests Ship in the Wheel | Implemented | The tests above are inside `tap_plugin/dcom/tests/` and pass against the `ci` record. | |
 
 ## Out of Scope (v0)
 
