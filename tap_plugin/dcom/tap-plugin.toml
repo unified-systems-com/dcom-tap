@@ -1,5 +1,5 @@
 manifest_version = "0"
-plugin_version = "0.1.0"
+plugin_version = "0.1.0" # x-release-please-version
 requires_tap = ">=0.2.0"
 slug = "dcom"
 name = "TAP dcom"
@@ -23,4 +23,4 @@ dimensions = "grift/dimensions.grift.json"
 [[boot.records]]
 name = "ci"
 description = "RESERVED NAME (req-boot-bootstrap-ci-record): the stack this plugin's own tests run in — depends_on closure (empty) + self, offline, credential-free. The consumer flips self to editable."
-sha256 = "0ce1ea0ce48439c08c95c5ccd05b1ccaf3fe9c43c49c8b64dd3befa983cac7b5"
+sha256 = "4436ee2bbf250d539bea36d9026abe8860e69c3fa954489862270c5d57aed9e2"
