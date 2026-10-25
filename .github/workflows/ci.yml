@@ -29,6 +29,6 @@ jobs:
     # must survive the conformance lane's venv, which holds no plugin at all (tap#666,
     # fixed after v0.2.0), and carries the dependency find-spec fix (tap PR# 667). The
     # harness itself is still core at the tag the manifest floor names.
-    uses: unified-systems-com/tap/.github/workflows/plugin-ci.yml@da212f5c0cf73d50d644f1c608e14b47515ccee8
+    uses: unified-systems-com/tap/.github/workflows/plugin-ci.yml@1e483bea6e42fc81350021fdf35cc4f8551931dd
     with:
       plugin_slug: dcom
