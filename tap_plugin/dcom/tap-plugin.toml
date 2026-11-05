@@ -1,6 +1,6 @@
 manifest_version = "0"
 plugin_version = "0.1.0" # x-release-please-version
-requires_tap = ">=0.3.0"
+requires_tap = ">=0.3.1"
 slug = "dcom"
 name = "TAP dcom"
 description = "The design / configuration / operation axis as a dimension pack: four dimension nodes and the rules for stamping the `dcom` label on nodes and edges. Vocabulary substrate — no models, no edges, no pages, no collector, no credential, no network. Consumers inherit the axis by declaring `dcom` in depends_on."
