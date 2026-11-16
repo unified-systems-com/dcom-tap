@@ -19,6 +19,7 @@ from pathlib import Path
 
 import pytest
 from tap.plugin_testing import find_plugin_source_root
+from tap_plugin.dcom.tests.conftest import dimension_view
 
 PACKAGE_ROOT = Path(__file__).resolve().parents[1]
 BUNDLE_PATH = PACKAGE_ROOT / "grift" / "dimensions.grift.json"
@@ -81,7 +82,7 @@ class TestFourNodes:
 
     def test_every_node_carries_tap_meta_dimension(self, seeded: dict) -> None:
         for name in ALL_NAMES:
-            assert seeded[name].entity.dimensions["tap.meta"] == "dimension"
+            assert dimension_view(seeded[name].entity)["tap.meta"] == "dimension"
 
     def test_the_dictionary_carries_no_dcom_value(self, seeded: dict) -> None:
         """`req-dcom-pack-4`: the pack is the dictionary, and dictionary entries are not
