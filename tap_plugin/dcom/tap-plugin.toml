@@ -15,7 +15,7 @@ status = "compatible"
 
 # The dimension pack (req-dcom-pack): four `dimension` nodes, no edges.
 [grift]
-dimensions = "grift/dimensions.grift.json"
+dimension = "grift/dimensions.grift.json"
 
 # In-package boot record (req-boot-bootstrap-records-in-package). The digest is the
 # canonical sha256 of the record (sorted keys, tight separators) — regenerate with
