@@ -1,4 +1,4 @@
-"""The dimension pack, proved by importing it into a grid (`req-dcom-pack`, `req-dcom-naming`, `req-dcom-queries`).
+"""The dimension pack, proved by importing it into a grid (`req-dcom-pack`, `req-dcom-axis-4`, `req-dcom-naming`, `req-dcom-queries`).
 
 Nothing here reads the bundle and calls that a result. The bundle is imported through
 `grift_import` and every assertion is made against what came back out of the grid — the
@@ -89,6 +89,63 @@ class TestFourNodes:
         entries in themselves."""
         for name in ALL_NAMES:
             assert AXIS not in seeded[name].entity.dimensions, name
+
+
+class TestTheAxisIsBounded:
+    """`req-dcom-axis-4`: the axis node declares its allowed values, and core refuses any
+    other. The list is read from the grid row, and the refusal is exercised through the
+    same service write an inheriting plugin's data takes, on the one type a dcom-only grid
+    has (`dimension`). The probe node is test data: a real dictionary node carries no
+    `dcom` value (`req-dcom-pack-4`)."""
+
+    OUTSIDE = "build"
+
+    @staticmethod
+    def _stamp(value: str):
+        from tap_grid.service_types import WriteOperation
+        from tap_grid.services import write_batch
+
+        op = WriteOperation(
+            verb="create_node",
+            type_slug="dimension",
+            payload={"name": f"dcomtest.probe_{value}", "description": "Test probe; not part of the pack."},
+            dimensions={AXIS: value},
+        )
+        return write_batch([op])
+
+    def test_the_axis_node_declares_exactly_the_three_values(self, seeded: dict) -> None:
+        assert seeded[AXIS].values == list(VALUES)
+
+    def test_the_value_nodes_declare_no_values(self, seeded: dict) -> None:
+        for name in VALUE_NAMES:
+            assert seeded[name].values is None, name
+
+    def test_the_bundle_declares_what_the_grid_holds(self, seeded: dict) -> None:
+        """The row could be bounded by something other than this bundle; the bundle is what ships."""
+        declared = {
+            node["node"]["name"]: node["node"].get("values")
+            for batch in _bundle()["batches"]
+            for node in batch["nodes"]
+        }
+        assert declared == {AXIS: list(VALUES), **dict.fromkeys(VALUE_NAMES)}
+
+    @pytest.mark.parametrize("value", VALUES)
+    def test_each_of_the_three_values_is_accepted(self, seeded: dict, value: str) -> None:
+        from tap_grid.models import Dimension
+
+        result = self._stamp(value)
+        assert result.success, result
+        probe = Dimension.objects.get(name=f"dcomtest.probe_{value}")
+        assert dimension_view(probe.entity)[AXIS] == value
+
+    def test_any_other_value_is_refused(self, seeded: dict) -> None:
+        from tap_grid.models import Dimension
+
+        assert self.OUTSIDE not in VALUES
+        result = self._stamp(self.OUTSIDE)
+        assert not result.success, result
+        assert "bounded dimension" in str(result), result
+        assert not Dimension.objects.filter(name=f"dcomtest.probe_{self.OUTSIDE}").exists()
 
 
 class TestDescriptions:
