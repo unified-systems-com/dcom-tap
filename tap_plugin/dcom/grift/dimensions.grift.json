@@ -6,15 +6,15 @@
   "batches": [
     {
       "batch_entity": {
-        "entity_id": "01a0c057-8f3d-70cd-b07c-c751a5b44363",
+        "entity_id": "01a20164-8360-7e55-8540-5d8e2303fc9b",
         "entity_type": "batch",
-        "name": "dcom Dimension Pack v0.1.0",
+        "name": "dcom Dimension Pack v0.1.2",
         "dimensions": {}
       },
       "batch_node": {
         "source": "tap_plugin.dcom.grift.dimensions",
-        "name": "dcom Dimension Pack v0.1.0",
-        "description": "The design / configuration / operation axis as four dimension nodes (req-dcom-pack): the axis node `dcom` and its three value nodes `dcom.design`, `dcom.configuration`, `dcom.operation`. No edges — the hierarchy is derived from the dotted name (req-dcom-naming), so parent/child edges would be a second copy of a fact the name already carries. Each node carries `tap.meta: dimension` (core's default for the type) and NO `dcom` value: the pack is the dictionary, and dictionary entries are not entries in themselves (req-dcom-pack-4). Node entity ids are minted once and never change; revising the descriptions means a new batch id and a bumped batch name, with the node ids stable."
+        "name": "dcom Dimension Pack v0.1.2",
+        "description": "The design / configuration / operation axis as four dimension nodes (req-dcom-pack): the axis node `dcom` and its three value nodes `dcom.design`, `dcom.configuration`, `dcom.operation`. No edges — the hierarchy is derived from the dotted name (req-dcom-naming), so parent/child edges would be a second copy of a fact the name already carries. Each node carries `tap.meta: dimension` (core's default for the type) and NO `dcom` value: the pack is the dictionary, and dictionary entries are not entries in themselves (req-dcom-pack-4). The axis node declares its allowed values (`values`: design, configuration, operation), so the axis is bounded and the grid refuses any other `dcom` value (req-dcom-axis-4). Node entity ids are minted once and never change; revising the bundle means a new batch id and a bumped batch name, with the node ids stable."
       },
       "nodes": [
         {
@@ -28,7 +28,12 @@
           },
           "node": {
             "name": "dcom",
-            "description": "The design / configuration / operation axis. Every node or edge that describes a designed system may carry one `dcom` label saying which kind of fact it is: `design` (intent, edited), `configuration` (declared to the system, versioned, changes under you), or `operation` (happened, immutable). An entity carries one value or none, never two. The value describes the observation, not the thing: a pipeline's definition is configuration; each run of it is an operation. Only facts derived from configuration can go stale, because only configuration changes. The three values are the nodes named `dcom.design`, `dcom.configuration` and `dcom.operation`."
+            "description": "The design / configuration / operation axis. Every node or edge that describes a designed system may carry one `dcom` label saying which kind of fact it is: `design` (intent, edited), `configuration` (declared to the system, versioned, changes under you), or `operation` (happened, immutable). An entity carries one value or none, never two. The value describes the observation, not the thing: a pipeline's definition is configuration; each run of it is an operation. Only facts derived from configuration can go stale, because only configuration changes. The three values are the nodes named `dcom.design`, `dcom.configuration` and `dcom.operation`.",
+            "values": [
+              "design",
+              "configuration",
+              "operation"
+            ]
           }
         },
         {

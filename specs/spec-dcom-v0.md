@@ -72,13 +72,13 @@ type. dcom says which kind of fact it is, and stops.
 | 2. | Legible to Player 3 | The axis and each value are nodes on the grid with descriptions written for an AI reader, so the vocabulary is read from the grid, never inferred from a type name. |
 | 3. | Derivable, not stored | Parent, children and the label a node defines are all derived from its name. Nothing about the hierarchy is stored twice. |
 | 4. | Opt-in | Inheriting the axis is one manifest line; a plugin that does not inherit it is untouched. |
-| 5. | Permissive first | v0 defines the rules and ships the pack; enforcement of stamping is deferred until the rules have been used in the field (`Out of Scope`). |
+| 5. | Permissive first | v0 defines the rules and ships the pack; enforcement of stamping (which types must carry a value) is deferred until the rules have been used in the field (`Out of Scope`). Which values exist is not deferred: the axis is closed (`req-dcom-axis-4`). |
 
 ## Requirements
 
 | RID | Name | Status | Notes |
 | --- | --- | :---: | --- |
-| req-dcom-axis | [The Axis](#the-axis) | Implemented | Key `dcom`; values `design`, `configuration`, `operation`; the meaning and mutability of each |
+| req-dcom-axis | [The Axis](#the-axis) | Implemented | Key `dcom`; values `design`, `configuration`, `operation`, declared on the axis node so the grid refuses any other; the meaning and mutability of each |
 | req-dcom-pack | [The Dimension Pack](#the-dimension-pack) | Implemented | Four `Dimension` nodes, dotted names, descriptions for Player 3, no edges |
 | req-dcom-naming | [Dotted Names Carry the Hierarchy](#dotted-names-carry-the-hierarchy) | Implemented | Parent, children and label are derived from the name |
 | req-dcom-inheritance | [Inheriting the Axis](#inheriting-the-axis) | Implemented | `depends_on = dcom` is the opt-in; stamping via default dimensions on the plugin's own types |
@@ -108,6 +108,14 @@ The label key is `dcom`. It takes exactly one of three string values.
 The value is a property of the **observation**, not of the thing observed. The same pipeline appears as a
 `configuration` node (its definition) and, separately, as `operation` nodes (its runs). Nothing carries both.
 
+The axis is **closed**. The `dcom` axis node declares the three values as its allowed values, in core's
+`values` field on the `Dimension` node (`req-grid-dimension-knobs` in core's `spec-grid-dimension.md`): a
+list there bounds the dimension. Core reads that list from the live node on every write, so a `dcom` value
+other than `design`, `configuration` or `operation` is refused by the grid wherever it is written (a type's
+default dimensions, a bundle, a collector, a service call), and nothing in this plugin or an inheriting one
+checks it a second time. The list is the three value nodes' last segments, in the order of the table above.
+This needs a core that has the field, which is why the manifest's `requires_tap` floor is `>=0.4.1`.
+
 #### Acceptance Criteria
 
 | ACID | Title | Status | Description | Notes |
@@ -115,6 +123,7 @@ The value is a property of the **observation**, not of the thing observed. The s
 | req-dcom-axis-1 | Key and Values Fixed | Implemented | The key is `dcom`; the value set is exactly `design`, `configuration`, `operation`, lower case. | |
 | req-dcom-axis-2 | Meaning Stated per Value | Implemented | Each value's meaning and mutability rule is stated in this spec and in the corresponding node's description (`req-dcom-pack-3`). | |
 | req-dcom-axis-3 | Observation, Not Thing | Implemented | The spec states that the value describes the observation and that no entity carries two values. | |
+| req-dcom-axis-4 | Allowed Values Declared and Enforced | Implemented | The `dcom` axis node's `values` is exactly `design`, `configuration`, `operation`; the three value nodes declare none. A write that stamps one of the three is accepted, and a write that stamps any other `dcom` value is refused by core. | Proven on a grid in `test_dcom_pack.py::TestTheAxisIsBounded`. The refusal is core's (`req-grid-dimension-knobs-2`); this plugin only declares the list. |
 
 ---
 
@@ -138,6 +147,9 @@ pages, no searches.
 
 Every node carries `tap.meta: dimension` (core's default for the type) and **no** `dcom` value: the pack is
 the dictionary, and dictionary entries are not entries in themselves.
+
+The axis node `dcom` also carries `values`: `design`, `configuration`, `operation` (`req-dcom-axis-4`). The
+three value nodes carry no `values`: each is a description of one position, not an axis anyone stamps.
 
 Entity ids are minted once (`scripts/uuid7`) and never change; the batch id and version move on every edit
 of the bundle, and the description text is edited in place under a new batch so the ids stay stable.
@@ -325,7 +337,7 @@ Tests (`tap_plugin/dcom/tests/`):
 | Test | Proves |
 | --- | --- |
 | `test_dcom_manifest.py` | Identity chain (slug, dist, namespace, entry point) agrees; no `[models]`, no `[edges]`, one `[grift]` entry. |
-| `test_dcom_pack.py` | `req-dcom-pack-1..4` after import; `req-dcom-naming-1..3` via Gryphon; the two dictionary queries in `req-dcom-queries`. |
+| `test_dcom_pack.py` | `req-dcom-pack-1..4` after import; `req-dcom-axis-4` (the declared values, and core accepting the three and refusing another); `req-dcom-naming-1..3` via Gryphon; the two dictionary queries in `req-dcom-queries`. |
 
 #### Acceptance Criteria
 

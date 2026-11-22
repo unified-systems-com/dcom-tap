@@ -24,6 +24,9 @@ nodes are the *dictionary*: they carry `tap.meta: dimension` and no `dcom` value
 | `configuration` | A declared instance the system reads to decide what may happen. | Versioned. It changes under you, so facts derived from its content can go stale. |
 | `operation` | Something that happened — a run, a scan, a finding at a moment. | Immutable. Derivations from it never go stale. |
 
+The axis is closed: the `dcom` node declares these three as its allowed values, and the grid refuses
+any other.
+
 An entity carries one value or none, never two, and the value describes the **observation**, not
 the thing: a pipeline's definition is `configuration`; each run of it is an `operation`.
 
