@@ -1,6 +1,6 @@
 manifest_version = "0"
 plugin_version = "0.1.2" # x-release-please-version
-requires_tap = ">=0.4.9"  # GRIFT format "1" headers (spine_version, type_versions) are read from tap 0.4.7; 0.4.9 is the floor for the fleet wave
+requires_tap = ">=0.5.0"  # GRIFT format "1" headers (spine_version, type_versions) are read from tap 0.4.7; 0.4.9 is the floor for the fleet wave
 slug = "dcom"
 name = "TAP dcom"
 description = "The design / configuration / operation axis as a dimension pack: four dimension nodes and the rules for stamping the `dcom` label on nodes and edges. Vocabulary substrate — no models, no edges, no pages, no collector, no credential, no network. Consumers inherit the axis by declaring `dcom` in depends_on."
